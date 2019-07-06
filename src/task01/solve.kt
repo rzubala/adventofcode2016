@@ -49,7 +49,6 @@ class Point(var x:Int, var y:Int) {
 }
 
 fun main() {
-    println ("task 01")
     val lines:List<String> = readInput("src/task01/input.data")
     val point = Point(0 ,0)
     var dir:Direction = Direction.UP
@@ -63,7 +62,7 @@ fun main() {
             else -> dir
         }
     }
-    println("part1: went to ${point.x}, ${point.y}, distance: ${point.distance()}")
+    println("part1: went to ${point.x}, ${point.y}, the total distance: ${point.distance()}")
 }
 
 fun parse(line: String):List<String> = line.split(", ")
