@@ -63,7 +63,7 @@ fun main() {
             else -> dir
         }
     }
-    println("went to ${point.x}, ${point.y}, distance: ${point.distance()}")
+    println("part1: went to ${point.x}, ${point.y}, distance: ${point.distance()}")
 }
 
 fun parse(line: String):List<String> = line.split(", ")
