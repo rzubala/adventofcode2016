@@ -36,7 +36,6 @@ class Solve3 extends FileReader {
     let cnt = 0
     for (let c=0;c<3;c++) {
       for (let r=0;r<this.data.length;r+=3) {
-        console.log(c, r)
         if (isTriang(this.data[r][c], this.data[r+1][c], this.data[r+2][c])) {
           cnt++
         }
