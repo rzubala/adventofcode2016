@@ -80,8 +80,7 @@ const cipher = (s: string, id: number): string => {
     .map((l) => {
       if (l.match(/[a-z]/i)) {
         const code = l.charCodeAt(0);
-        const shift =
-          code >= 65 && code <= 90 ? 65 : code >= 97 && code <= 122 ? 97 : 0;
+        const shift = 'a'.charCodeAt(0)
         return String.fromCharCode(((code - shift + id) % letters) + shift);
       }
       return l;
