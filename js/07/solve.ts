@@ -21,14 +21,14 @@ class Solve7 extends FileReader {
   };
 
   private process2 = () => {
-    let cnt = 0
-    for (let line of this.parsed) {
+    const cnt = this.parsed.reduce((a, line) => {
       for (let hyper of line[0]) {
         if (hasAba(hyper, line[1])) {
-          cnt++
+          return a + 1
         }
       }
-    }
+      return a
+    }, 0)
     console.log(cnt)
   }
 
@@ -93,12 +93,7 @@ const hasAba = (hyper: string, parts: string[]): boolean => {
 
 const checkBab = (input: string, parts: string[]): boolean => {
   const bab = input[1] + input[0] + input[1]
-  for (let part of parts) {
-    if (part.includes(bab)) {
-      return true
-    }
-  }
-  return false
+  return parts.filter(p => p.includes(bab)).length > 0
 }
 
 const hasAbba = (input: string): boolean => {
