@@ -14,21 +14,16 @@ interface Instruction {
   b: number;
 }
 
-const mark = (x: number, y: number, display: Array<Array<boolean>>): Array<Array<boolean>> => {
-  return display.map((line, lineY) => {
-    if (lineY <= y) {
-      return line.map((pixel, pixelX) => {
-        if (pixelX <= x) {
-          return true;
-        }
-        return pixel;
-      });
+const mark = (x: number, y: number, display: Array<Array<boolean>>) => {
+  for (let iy=0;iy<y;iy++) {
+    for (let ix=0;ix<x;ix++) {
+      display[iy][ix] = true
     }
-    return line;
-  });
+  }
 };
 
 const print = (display: Array<Array<boolean>>) => {
+  console.log('---')
   display.forEach(line => console.log(line.map(v => v?'#':' ').join('')))
 }
 
@@ -36,20 +31,29 @@ const rotateCol = (
   col: number,
   by: number,
   display: Array<Array<boolean>>
-):Array<Array<boolean>> => {
-  return display
+) => {
+  const tmp = []
+  for (let h=0;h<HEIGHT;h++) {
+    tmp.push(display[h][col])
+  }
+  for (let h=0;h<HEIGHT;h++) {
+    display[(h + by)%HEIGHT][col] = tmp[h]
+  }
 };
 
 const rotateRow = (
   row: number,
   by: number,
   display: Array<Array<boolean>>
-):Array<Array<boolean>> => {
-  return display
+) => {  
+  const tmp = [...display[row]]
+  for (let i=0;i<WIDTH;i++) {
+    display[row][(i+by)%WIDTH] = tmp[i]    
+  }
 };
 
 interface FunctionMap {
-  [key: string]: (x: number, y: number, display: Array<Array<boolean>>) => Array<Array<boolean>>
+  [key: string]: (x: number, y: number, display: Array<Array<boolean>>) => void
 }
 const functions: FunctionMap = {
   [INS.RECT]: mark,
@@ -65,19 +69,19 @@ class Solve8 extends FileReader {
     this.display = Array.from({length: HEIGHT}, (v,k) => Array.from({length: WIDTH}, (v2, k2) => false))
 
     try {
-      const rawData = await this.readData("test.data");
+      const rawData = await this.readData("input.data");
       for (let line of rawData.split("\n")) {
         if (line.match(/rect/)) {
           const [x, y] = line.split(" ")[1].split("x");
-          this.instructions.push({ key: INS.RECT, a: x, b: y });
+          this.instructions.push({ key: INS.RECT, a: +x, b: +y });
         } else {
           const tmp = line.split(" by ");
           const by = tmp[1];
           const col = tmp[0].split("=")[1];
           this.instructions.push({
             key: line.match(/column/) ? INS.COL : INS.ROW,
-            a: col,
-            b: by,
+            a: +col,
+            b: +by,
           });
         }
       }
@@ -93,11 +97,13 @@ class Solve8 extends FileReader {
   };
 
   private process = () => {
-    let display = this.display
     for (let instruction of this.instructions) {
-      display = functions[instruction.key](instruction.a, instruction.b, this.display);
-      print(display)
+      functions[instruction.key](instruction.a, instruction.b, this.display);      
     }
+    print(this.display)
+    console.log(this.display.reduce((a, line) => {
+      return a + line.filter(Boolean).length
+    }, 0))
   };
 }
 
